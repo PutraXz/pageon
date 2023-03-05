@@ -277,7 +277,7 @@
                                 <?php
                                   $get = $conn->query("select * from weddings where user_id='$_SESSION[user_id]'")->fetch_array();
                                 ?>
-                                <a href="<?= '/slug/wedding-show/wedding/'.$get['name_url'] ?>" class=""><?= 'wedding-show/wedding'.$get['name_url'] ?></a>
+                                <a href="<?= '/wedding-show/wedding/'.$get['name_url'] ?>" class=""><?= 'wedding-show/wedding'.$get['name_url'] ?></a>
                               </div>
                           </div>
                         </div>
