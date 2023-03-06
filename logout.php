@@ -3,6 +3,6 @@ session_start();
 session_destroy();
 echo "
     <script>
-        window.location.href='/slug';
+        window.location.href='/wedding-native';
     </script>
 ";

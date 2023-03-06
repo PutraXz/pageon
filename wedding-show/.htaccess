@@ -4,5 +4,5 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME}.php -f
     RewriteRule ^(.*) wedding.php 
-    ErrorDocument 404 /slug/error.php
+    ErrorDocument 404 /wedding-native/error.php
 </IfModule>

@@ -1,3 +1,6 @@
+<?php
+  session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,8 +32,13 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav  ms-auto mb-2 mb-lg-0 me-5">
+                  <?php if(isset($_SESSION['level'])){
+                  ?>
+                    <a class="nav-link" href="logout.php">Logout</a>
+                    <?php }else{ ?>
                     <a class="nav-link" href="login">Log in</a>
                     <a class="nav-link" href="">Register</a>
+                    <?php } ?>
                 </div>
             </div>
         </div>
