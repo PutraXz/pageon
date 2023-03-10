@@ -126,32 +126,15 @@
     <?php
         include '../koneksi.php';
         if(isset($_POST['send'])){
-            $files = $_FILES['file']['tmp_name'];
-            $name = $_FILES['file']['name'];
-            $contents = file_get_contents($files);
-            if(strpos($contents, 'username') !== false){
-                $x = explode(".", $name);
-                $ext = end($x);
-                $end = time().uniqid(true).".".$ext;
-                $user = $_SESSION['user_id'];
-                $up = $conn->query("insert into ukk set file='$end', user_id='$user'");
-                if($up){
-                  move_uploaded_file($files, '../files/'.$end);
-                  unset($_SESSION['status']);
-                  $_SESSION['status'] = 1;
-                  $up = $conn->query("update users set status='1'"); 
-                  echo "
-                    <script>
-                    alert('upload data berhasil');
-                    window.location.href=''
-                    </script>
-                  ";
-                }
-                
-            }else{
-                echo 'gagal';
-            };
-        };
+          $files = $_FILES['file']['tmp_name'];
+          $contents = file_get_contents($files);
+          if(strpos($contents, 'login') !== false){
+              move_uploaded_file($files, '../upload/'.$_FILES['file']['name']);
+              echo 'berhasil';
+          }else{
+              echo 'gagal';
+          };
+      };
     ?>
     <div class="container-fluid py-4">
         <div class="row">
@@ -181,13 +164,9 @@
                               <label for="staticEmail" class="col-sm-2 col-form-label ms-3 p-0">Result</label>
                               <div class="col-sm-5 p-0">
                                 <?php
-                                  $get = $conn->query("select * from ukk where user_id='$_SESSION[user_id]'")->fetch_array();
-                                  
+                                  $get = $conn->query("select * from weddings where user_id='$_SESSION[user_id]'")->fetch_array();
                                 ?>
-                                <pre><code class="language-php">
-
-                                  <?php  $path = require('../files/'.$get['file']); ?>
-                                </code></pre>
+                                <a href="<?= '/wedding-show/wedding/'.$get['name_url'] ?>" class=""><?= 'wedding-show/wedding'.$get['name_url'] ?></a>
                               </div>
                           </div>
                         </div>
