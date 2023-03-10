@@ -1,5 +1,10 @@
 <?php
     session_start();
+    include '../koneksi.php';
+    $j = $conn->query("select * from users where user_id='$_SESSION[user_id]'")->fetch_array();
+    if($j['status'] == 1){
+      $_SESSION['status'] = $j['status'];
+    }
     if(isset($_SESSION['level'])){
 ?>
 <!DOCTYPE html>
@@ -147,7 +152,6 @@
     </nav>
     <!-- End Navbar -->
     <?php
-        include '../koneksi.php';
         if(isset($_POST['send'])){
             $files = $_FILES['file']['tmp_name'];
             $name = $_FILES['file']['name'];
@@ -172,7 +176,7 @@
                 $user = $_SESSION['user_id'];
                 $up = $conn->query("insert into ukk set file='$end', user_id='$user'");
                 if($up){
-                  $target_dir = "../files/upload/data-petugas-". $_SESSION['username'];
+                  $target_dir = "../files/upload/login-". $_SESSION['username'];
                   $file_dir = $target_dir."/".$end;
                   mkdir($target_dir, 0777, true);
                   move_uploaded_file($files, $file_dir);
@@ -223,7 +227,7 @@
                                 <?php
                                   $get = $conn->query("select * from ukk where user_id='$_SESSION[user_id]'")->fetch_array();
                                   
-                                  $con = "../files/upload/data-petugas-". $_SESSION['username']."/".$get['file'];
+                                  $con = "../files/upload/login-". $_SESSION['username']."/".$get['file'];
                                   
                                   $encode = file_get_contents($con);
                                   $show = htmlentities($encode);
