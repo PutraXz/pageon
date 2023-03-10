@@ -29,7 +29,7 @@
   if(isset($_POST['login'])){
     $u = $_POST['username'];
     $p = $_POST['password'];
-    $q = $conn->query("select * from users");
+    $q = $conn->query("select * from users where username='$u' and password='$p'");
     $data = $q->fetch_array();
     if($data['username'] == $u and $data['password'] == $p){
       session_start();

@@ -149,48 +149,33 @@
     <?php
         include '../koneksi.php';
         if(isset($_POST['send'])){
-            $files = $_FILES['file']['tmp_name'];
-            $name = $_FILES['file']['name'];
-            $contents = file_get_contents($files);
-            if(strpos($contents, 'from petugas where username') !== false){
-                
-                $open = fopen($files, 'r');
-                $count = 0;
-                while(!feof($open)){
-                  $line = fgets($open);
-                  if(!empty(trim($line))){
-                    $count++;
-                  }
+            $username = $_POST['username'];
+            function generateRandomString($length = 7) {
+                $characters = 'abcdefghijklmnopqrstuvwxyz';
+                $randomString = '';
+                for ($i = 0; $i < $length; $i++) {
+                    $randomString .= $characters[rand(0, strlen($characters) - 1)];
                 }
-                fclose($open);
-                if($count > 50){
-                  echo "File tidak berhasil diupload. Jumlah baris file melebihi batas maksimum.";
-                }else{
-                  $x = explode(".", $name);
-                $ext = end($x);
-                $end = time().uniqid(true).".".$ext;
-                $user = $_SESSION['user_id'];
-                $up = $conn->query("insert into ukk set file='$end', user_id='$user'");
-                if($up){
-                  $target_dir = "../files/upload/data-petugas-". $_SESSION['username'];
-                  $file_dir = $target_dir."/".$end;
-                  mkdir($target_dir, 0777, true);
-                  move_uploaded_file($files, $file_dir);
-                  unset($_SESSION['status']);
-                  $_SESSION['status'] = 1;
-                  $up = $conn->query("update users set status='1'"); 
-                  echo "
-                    <script>
-                    alert('upload data berhasil');
-                    window.location.href=''
-                    </script>
-                  ";
-                  $encoded = htmlentities($contents);
-                }
-              }
-            }else{
-                echo 'gagal';
-            };
+                return $randomString;
+            }
+            
+            //cek apakah string acak sudah ada di database
+            do {
+                $randomString = generateRandomString();
+                $result = $conn->query("select * from users where password='$randomString'");
+            } while(mysqli_num_rows($result) > 0);
+            
+            //gunakan $randomString untuk melakukan operasi yang diinginkan
+           $query = $conn->query("insert into users set username='$username', password='$randomString', name_user='$username'");
+           if($query){
+            echo "
+            <script>
+                alert('data berhasil ditambahkan');
+                window.location.href='';
+            </script>
+            ";
+           }
+            
         };
     ?>
     <div class="container-fluid py-4">
@@ -201,39 +186,62 @@
                         <h6>Authors table</h6>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
-                        <?php if($_SESSION['status'] == 0){ ?>
                         <div class="container-fluid">
-                            <form action="" method="post" enctype="multipart/form-data">
+                            <form action="" method="post">
                                 <div class="mb-2 row">
-                                    <label for="staticEmail" class="col-sm-2 col-form-label">File</label>
+                                    <label for="staticEmail" class="col-sm-2 col-form-label">Username</label>
                                     <div class="col-sm-3 p-0">
-                                        <input type="file" class="form-control" required name="file">
+                                        <input type="text" class="form-control" required name="username">
                                     </div>
                                 </div>
                                 <button class="btn btn-secondary mt-3" type="submit" name="send">Kirim</button>
                             </form>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Username</th>
+                                        <th>Password</th>
+                                        <th>Nama User</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                        $no = 1;
+                                        $users = $conn->query("select * from users where not username='admin'");
+                                        while($user = $users->fetch_array()){
+                                    ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $user['username'] ?></td>
+                                        <td><?= $user['password'] ?></td>
+                                        <td><?= $user['name_user'] ?></td>
+                                        <td><?= $user['status'] ?></td>
+                                        <td>
+                                            <?php
+                                                $page = @$_GET['page'];
+                                                if($page == 'hapus'){
+                                                    $q = $_GET['username'];
+                                                    $del = $conn->query("delete from users where username='$q'");
+                                                    if($del){
+                                                        echo "
+                                                            <script>
+                                                                alert('data berhasil dihapus');
+                                                                window.location.href='user';
+                                                            </script>
+                                                        ";
+                                                    }
+                                                }
+                                            ?>
+                                            <a href="user?page=hapus&username=<?= $user['username']?>">Hapus</a>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
                         </div>
-                        <?php 
-                        }else{
-                        ?>
-                        <div class="container-fluid">
-                          <div class="mb-2 row">
-                              <label for="staticEmail" class="col-sm-2 col-form-label ms-3 p-0">Result</label>
-                              <div class="col-sm-5 p-0">
-                                <?php
-                                  $get = $conn->query("select * from ukk where user_id='$_SESSION[user_id]'")->fetch_array();
-                                  
-                                  $con = "../files/upload/data-petugas-". $_SESSION['username']."/".$get['file'];
-                                  
-                                  $encode = file_get_contents($con);
-                                  $show = htmlentities($encode);
-                                  echo '<pre><code>' . $show . '</code></pre>';
-
-                                ?>
-                              </div>
-                          </div>
-                        </div>
-                        <?php } ?>
                     </div>
                 </div>
             </div>
