@@ -53,19 +53,19 @@
       while($result = $res->fetch_array()){
         $current_ip = $_SERVER['REMOTE_ADDR'];
         $allowed_ips = array($result['ip_address']);
-        if (in_array($current_ip, $allowed_ips)) { 
-          print_r($allowed_ips);
-          echo 'mantep';
-        //IP diizinkan, lanjutkan proses login
-        // echo "
-        //   <script>
-        //   window.location.href='dashboard'
-        //   </script>
-        // ";
-      } else {
-        //IP tidak diizinkan, tampilkan pesan error
-        echo "Maaf, Anda tidak diizinkan untuk login.";
-        }
+      }
+      if (in_array($current_ip, $allowed_ips)) { 
+        print_r($allowed_ips);
+        echo 'mantep';
+      //IP diizinkan, lanjutkan proses login
+      // echo "
+      //   <script>
+      //   window.location.href='dashboard'
+      //   </script>
+      // ";
+    } else {
+      //IP tidak diizinkan, tampilkan pesan error
+      echo "Maaf, Anda tidak diizinkan untuk login.";
       }
     }
   }
