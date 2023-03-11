@@ -43,7 +43,11 @@
         $get_ip = $_SERVER['REMOTE_ADDR'];
         $query = $conn->query("INSERT INTO computers set ip_address='$get_ip',user_id='$_SESSION[user_id]'");
       }else{
-        echo "maaf anda sudah login di dua tempat yang berbeda";
+        echo "
+          <script>
+          alert('gagal');
+          </script>
+        ";
       }
       $res = $conn->query("select * from computers where user_id='$_SESSION[user_id]'");
       while($result = $res->fetch_array()){
