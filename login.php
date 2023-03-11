@@ -44,9 +44,11 @@
             $_SESSION['user_id'] = $data['user_id'];
             $_SESSION['username'] = $data['username'];
             $_SESSION['level'] = $data['level'];
-            echo "</script>
-            window.location.href='dashboard'
-            </script>";
+            echo "
+              <script>
+              window.location.href='dashboard'
+              </script>
+            ";
             exit();
           }else{
             // login failed
@@ -64,9 +66,11 @@
           $_SESSION['user_id'] = $data['user_id'];
           $_SESSION['username'] = $data['username'];
           $_SESSION['level'] = $data['level'];
-          echo "</script>
+          echo "
+          <script>
           window.location.href='dashboard'
-          </script>";
+          </script>
+          ";
           exit();
         }else{
           // login failed
@@ -84,9 +88,11 @@
         $_SESSION['user_id'] = $data['user_id'];
         $_SESSION['username'] = $data['username'];
         $_SESSION['level'] = $data['level'];
-        echo "</script>
+        echo "
+        <script>
         window.location.href='dashboard'
-        </script>";
+        </script>
+        ";
         exit();
       }
     }else{
