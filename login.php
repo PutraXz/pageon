@@ -26,23 +26,63 @@
 </html>
 <?php
   include 'koneksi.php';
+  session_start();
   if(isset($_POST['login'])){
     $u = $_POST['username'];
     $p = $_POST['password'];
     $q = $conn->query("select * from users where username='$u' and password='$p'");
     $data = $q->fetch_array();
     if($data['username'] == $u and $data['password'] == $p){
-      session_start();
-      $_SESSION['name_user'] = $data['name_user'];
-      $_SESSION['status'] = $data['status'];
-      $_SESSION['user_id'] = $data['user_id'];
-      $_SESSION['username'] = $data['username'];
-      $_SESSION['level'] = $data['level'];
-        echo "
-          <script>
-          window.location.href='dashboard'
-          </script>
-        ";
+      // check if cookie exists
+      if(isset($_COOKIE["login_computers"])){
+        $login_computers = json_decode($_COOKIE["login_computers"]);
+        if(count($login_computers) >= 2){ // allow login only for 2 computers
+          if(in_array($_SERVER['REMOTE_ADDR'], $login_computers)){ // check if current computer is in the allowed list
+            // login success
+            $_SESSION['name_user'] = $data['name_user'];
+            $_SESSION['status'] = $data['status'];
+            $_SESSION['user_id'] = $data['user_id'];
+            $_SESSION['username'] = $data['username'];
+            $_SESSION['level'] = $data['level'];
+            echo "</script>window.location.href='dashboard'</script>";
+            exit();
+          }else{
+            // login failed
+            echo "Maaf, Anda hanya bisa login di dua komputer saja.";
+          }
+        }else{
+        // if less than 2 computers allowed, add current computer to allowed list
+        if(!in_array($_SERVER['REMOTE_ADDR'], $login_computers)){
+          $login_computers[] = $_SERVER['REMOTE_ADDR'];
+          setcookie("login_computers", json_encode($login_computers), time()+(60*60*24*30)); // set cookie for 30 days
+          // login success
+          
+          $_SESSION['name_user'] = $data['name_user'];
+          $_SESSION['status'] = $data['status'];
+          $_SESSION['user_id'] = $data['user_id'];
+          $_SESSION['username'] = $data['username'];
+          $_SESSION['level'] = $data['level'];
+          echo "</script>window.location.href='dashboard'</script>";
+          exit();
+        }else{
+          // login failed
+          echo "Maaf, Anda hanya bisa login di dua komputer saja.";
+        }
+      }
+      }else{
+        // if cookie not exists, create a new one and add current computer to allowed list
+        $login_computers = array($_SERVER['REMOTE_ADDR']);
+        setcookie("login_computers", json_encode($login_computers), time()+(60*60*24*30)); // set cookie for 30 days
+        // login success
+        
+        $_SESSION['name_user'] = $data['name_user'];
+        $_SESSION['status'] = $data['status'];
+        $_SESSION['user_id'] = $data['user_id'];
+        $_SESSION['username'] = $data['username'];
+        $_SESSION['level'] = $data['level'];
+        echo "</script>window.location.href='dashboard'</script>";
+        exit();
+      }
     }else{
       echo "
         <script>
@@ -56,3 +96,4 @@
     }
   }
 ?>
+<!--  -->
