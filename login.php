@@ -28,30 +28,40 @@
   include 'koneksi.php';
   session_start();
   if(isset($_POST['login'])){
-  $allowed_ips = array('192.168.100.134', '180.251.4.155'); //ganti ip1 dan ip2 dengan IP yang diizinkan
-
-  $current_ip = $_SERVER['REMOTE_ADDR']; //mendapatkan IP saat ini dari user
-  if (in_array($current_ip, $allowed_ips)) { //memeriksa apakah IP saat ini diizinkan
-    //IP diizinkan, lanjutkan proses login
     $u = $_POST['username'];
     $p = $_POST['password'];
     $q = $conn->query("select * from users where username='$u' and password='$p'");
     $data = $q->fetch_array();
     if($data['username'] == $u and $data['password'] == $p){
-        $_SESSION['name_user'] = $data['name_user'];
-            $_SESSION['status'] = $data['status'];
-            $_SESSION['user_id'] = $data['user_id'];
-            $_SESSION['username'] = $data['username'];
-            $_SESSION['level'] = $data['level'];
-            echo "
-              <script>
-              window.location.href='dashboard'
-              </script>
-            ";
+      $_SESSION['name_user'] = $data['name_user'];
+      $_SESSION['status'] = $data['status'];
+      $_SESSION['user_id'] = $data['user_id'];
+      $_SESSION['username'] = $data['username'];
+      $_SESSION['level'] = $data['level'];
+      $ip = $conn->query("SELECT COUNT(*) as count FROM computers");
+      if($ip['count'] < 2){
+        $get_ip = $_SERVER['REMOTE_ADDR'];
+        $query = $conn->query("INSERT INTO computers set ip_address='$get_ip',user_id='$_SESSION[user_id]'");
+      }else{
+        echo "maaf anda sudah login di dua tempat yang berbeda";
       }
-  } else {
-    //IP tidak diizinkan, tampilkan pesan error
-    echo "Maaf, Anda tidak diizinkan untuk login.";
+      $res = $conn->query("select * from computers where user_id='$_SESSION[user_id]'");
+      while($result = $res->fetch_array()){
+        $allowed_ips = array($result['ip_address']);
+      }
+      $current_ip = $_SERVER['REMOTE_ADDR']; //mendapatkan IP saat ini dari user
+      if (in_array($current_ip, $allowed_ips)) { 
+        echo $allowed_ips;
+      //IP diizinkan, lanjutkan proses login
+      // echo "
+      //   <script>
+      //   window.location.href='dashboard'
+      //   </script>
+      // ";
+    } else {
+      //IP tidak diizinkan, tampilkan pesan error
+      echo "Maaf, Anda tidak diizinkan untuk login.";
+      }
     }
   }
 ?>
