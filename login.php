@@ -51,22 +51,22 @@
       }
       $res = $conn->query("select * from computers where user_id='$_SESSION[user_id]'");
       while($result = $res->fetch_array()){
+        $current_ip = $_SERVER['REMOTE_ADDR'];
         $allowed_ips = array($result['ip_address']);
-      }
-      $current_ip = $_SERVER['REMOTE_ADDR']; //mendapatkan IP saat ini dari user
-      if (in_array($current_ip, $allowed_ips)) { 
+        if (in_array($current_ip, $allowed_ips)) { 
+          print_r($allowed_ips);
+          echo 'mantep';
+        //IP diizinkan, lanjutkan proses login
+        // echo "
+        //   <script>
+        //   window.location.href='dashboard'
+        //   </script>
+        // ";
+      } else {
+        //IP tidak diizinkan, tampilkan pesan error
         print_r($allowed_ips);
-        echo 'mantep';
-      //IP diizinkan, lanjutkan proses login
-      // echo "
-      //   <script>
-      //   window.location.href='dashboard'
-      //   </script>
-      // ";
-    } else {
-      //IP tidak diizinkan, tampilkan pesan error
-      print_r($allowed_ips);
-      echo "Maaf, Anda tidak diizinkan untuk login.";
+        echo "Maaf, Anda tidak diizinkan untuk login.";
+        }
       }
     }
   }
