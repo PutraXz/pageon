@@ -56,6 +56,7 @@
       $current_ip = $_SERVER['REMOTE_ADDR']; //mendapatkan IP saat ini dari user
       if (in_array($current_ip, $allowed_ips)) { 
         print_r($allowed_ips);
+        echo 'mantep';
       //IP diizinkan, lanjutkan proses login
       // echo "
       //   <script>
