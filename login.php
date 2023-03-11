@@ -64,6 +64,7 @@
       // ";
     } else {
       //IP tidak diizinkan, tampilkan pesan error
+      print_r($allowed_ips);
       echo "Maaf, Anda tidak diizinkan untuk login.";
       }
     }
