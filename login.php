@@ -39,7 +39,7 @@
       $_SESSION['username'] = $data['username'];
       $_SESSION['level'] = $data['level'];
       $ip = $conn->query("SELECT COUNT(*) as count FROM computers")->fetch_array();
-      if($ip['count'] < 2){
+      if($ip['count'] < 3){
         $get_ip = $_SERVER['REMOTE_ADDR'];
         $query = $conn->query("INSERT INTO computers set ip_address='$get_ip',user_id='$_SESSION[user_id]'");
       }else{
