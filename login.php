@@ -38,7 +38,7 @@
       $_SESSION['user_id'] = $data['user_id'];
       $_SESSION['username'] = $data['username'];
       $_SESSION['level'] = $data['level'];
-      $ip = $conn->query("SELECT COUNT(*) as count FROM computers");
+      $ip = $conn->query("SELECT COUNT(*) as count FROM computers")->fetch_array();
       if($ip['count'] < 2){
         $get_ip = $_SERVER['REMOTE_ADDR'];
         $query = $conn->query("INSERT INTO computers set ip_address='$get_ip',user_id='$_SESSION[user_id]'");
@@ -51,7 +51,7 @@
       }
       $current_ip = $_SERVER['REMOTE_ADDR']; //mendapatkan IP saat ini dari user
       if (in_array($current_ip, $allowed_ips)) { 
-        echo $allowed_ips;
+        print_r($allowed_ips);
       //IP diizinkan, lanjutkan proses login
       // echo "
       //   <script>
