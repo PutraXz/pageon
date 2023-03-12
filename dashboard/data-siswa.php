@@ -1,7 +1,7 @@
 <?php
     include '../koneksi.php';
     session_start();
-    if(isset($_SESSION['level'])){
+    if(($_SESSION['username']) == 'aulia'){
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -101,7 +101,7 @@
             </a>
           </li>
           <li class="nav-item mt-2">
-            <a class="nav-link  active" href="data-transaksi">
+            <a class="nav-link  active" href="">
               <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                 <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                   <title>office</title>
@@ -140,9 +140,8 @@
               <span class="nav-link-text ms-1">Ajax Data</span>
             </a>
           </li>
-          <?php if($_SESSION['username'] == 'aulia'){ ?>
           <li class="nav-item mt-2">
-            <a class="nav-link  active" href="data-siswa">
+            <a class="nav-link  active" href="">
               <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                 <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                   <title>office</title>
@@ -161,7 +160,6 @@
               <span class="nav-link-text ms-1">Data Siswa</span>
             </a>
           </li>
-          <?php } ?>
         </ul>
       </div>
     </aside>
@@ -211,7 +209,7 @@
     <!-- End Navbar -->
     <?php
         $j = $conn->query("select * from users where user_id='$_SESSION[user_id]'")->fetch_array();
-        $target_dir = "../files/upload/";
+        $target_dir = "../files/upload/data-siswa-". $_SESSION['username'];
         @$end_dir = $target_dir."/".$j['file'];
         if(!file_exists($end_dir)){
           unset($_SESSION['status']);
@@ -221,7 +219,7 @@
           $files = $_FILES['file']['tmp_name'];
           $name = $_FILES['file']['name'];
           $contents = file_get_contents($files);
-          if(strpos($contents, 'insert into petugas set username=') !== false){
+          if(strpos($contents, 'insert into siswa') !== false){
               
               $open = fopen($files, 'r');
               $count = 0;
@@ -232,12 +230,12 @@
                 }
               }
               fclose($open);
-              if($count > 391){
+              if($count > 591){
                 echo "File tidak berhasil diupload. Jumlah baris file melebihi batas maksimum.";
               }else{
                 $x = explode(".", $name);
               $ext = end($x);
-              $end = time().uniqid(true)."data-petugas"."-".$_SESSION['username'].".".$ext;
+              $end = time().uniqid(true).".".$ext;
               $user = $_SESSION['user_id'];
               $up = $conn->query("insert into ukk set file='$end', user_id='$user'");
               if($up){
@@ -271,12 +269,13 @@
                         <h6>Authors table</h6>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
+                    
                         <div class="container-fluid">
                           <div class="mb-2 row">
-                              <label for="staticEmail" class="col-sm-2 col-form-label ms-3 p-0">Result Data Petugas</label>
+                              <label for="staticEmail" class="col-sm-2 col-form-label ms-3 p-0">Result Data Siswa</label>
                               <div class="col-sm-5 p-0">
-                                <?php
-                                  $con = "../files/upload/data_petugas.php";
+                              <?php
+                                  $con = "../files/upload/data_siswa.php";
                                   $encode = file_get_contents($con);
                                   $show = htmlentities($encode);
                                   echo '<pre><code>' . $show . '</code></pre>';
