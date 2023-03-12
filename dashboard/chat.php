@@ -14,6 +14,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // ambil data pesan setiap 1 detik
+      setInterval(function() {
+        $.ajax({
+          url: "get_messages",
+          type: "GET",
+          success: function(data) {
+            $("#messages").html(data);
+          }
+        });
+      }, 1000);
+
+      // kirim pesan ketika tombol "Kirim" ditekan
+      $("#send_btn").click(function() {
+        var message = $("#message_input").val();
+        $.ajax({
+          url: "send_message",
+          type: "POST",
+          data: { message: message },
+          success: function() {
+            $("#message_input").val("");
+          }
+        });
+      });
+    });
+  </script>
   <title>
     Soft UI Dashboard by Creative Tim
   </title>
@@ -227,7 +255,7 @@
           </li>
           <?php } ?>
           <li class="nav-item mt-2">
-            <a class="nav-link  active" href="chat">
+            <a class="nav-link  active" href="">
               <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                 <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                   <title>office</title>
@@ -351,13 +379,12 @@
                           <div class="mb-2 row">
                               <label for="staticEmail" class="col-sm-2 col-form-label ms-3 p-0">Result Login</label>
                               <div class="col-sm-5 p-0">
-                                <?php
-                                  $con = "../files/upload/login.php";
-                                  $encode = file_get_contents($con);
-                                  $show = htmlentities($encode);
-                                  echo '<pre><code>' . $show . '</code></pre>';
-
-                                ?>
+                                <h1>Forum Chat</h1>
+                                <div id="messages"></div>
+                                <div>
+                                    <input type="text" id="message_input">
+                                    <button id="send_btn">Kirim</button>
+                                </div>
                               </div>
                           </div>
                         </div>
