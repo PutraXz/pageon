@@ -1,7 +1,8 @@
-<?php
+<?
+include 'koneksi.php';
 session_start();
+$req = $conn->query("delete from computers where user_id='$_SESSION[user_id]'");
 session_destroy();
-setcookie("login_computers", "", time() - 3600);
 echo "
     <script>
         window.location.href='login';
